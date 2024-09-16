@@ -20,4 +20,8 @@ public class TaskService {
     public List<Task> getTasksByUser(String idUser) {
         return taskRepository.findTasksByUser(idUser);
     }
+    public void createUser(User usuario){
+        users.put(usuario.getId(),usuario);
+
+    }
 }
