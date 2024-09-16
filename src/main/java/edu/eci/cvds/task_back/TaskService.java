@@ -3,6 +3,7 @@ package edu.eci.cvds.task_back;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,5 +24,13 @@ public class TaskService {
     public void createUser(User usuario){
         users.put(usuario.getId(),usuario);
 
+    }
+
+    public List<User> getUsers(){
+        List<User> newUser= new ArrayList<>();
+        for(String user : users.keySet()){
+            newUser.add(users.get(user));
+        }
+        return newUser;
     }
 }

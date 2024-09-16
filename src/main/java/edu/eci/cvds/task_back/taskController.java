@@ -6,21 +6,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/User")
+@RequestMapping("/taskManager")
 public class taskController {
     @Autowired
     private TaskService taskService;
 
 
-    @GetMapping
+    @GetMapping ("getTasks")
     public List<Task> getTasks(@RequestParam String idUser) {
         return taskService.getTasksByUser(idUser);
 
     }
 
-    @PostMapping
-    public void createUser(@RequestBody User usuario){
-        taskService.createUser(usuario);
+    @PostMapping ("createUser")
+    public void createUser(@RequestParam User idUser){
+        taskService.createUser(idUser);
     }
-
+    @GetMapping ("getUsers")
+    public List<User> getUsers(){
+        return taskService.getUsers();
+    }
 }
+
