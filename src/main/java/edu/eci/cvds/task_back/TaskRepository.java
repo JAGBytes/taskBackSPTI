@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
-public interface TaskRepository extends MongoRepository<Task, String> {
+public interface TaskRepository extends MongoRepository<Task, String>, TaskTextRepository {
 
     @Query("{idUser:'?0'}")
     List<Task> findTasksByUser(String idUser);
