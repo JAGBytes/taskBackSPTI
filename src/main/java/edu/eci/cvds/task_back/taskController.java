@@ -19,8 +19,8 @@ public class taskController {
     }
 
     @PostMapping ("createUser")
-    public void createUser(@RequestParam User idUser){
-        taskService.createUser(idUser);
+    public void createUser(@RequestBody User user){
+        taskService.createUser(user);
     }
     @GetMapping ("getUsers")
     public List<User> getUsers(){

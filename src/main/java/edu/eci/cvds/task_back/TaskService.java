@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class TaskService {
     List<Task> tasks ;
-    HashMap<String,User> users;
+    HashMap<String,User> users = new HashMap<>();
     private TaskRepository taskRepository;
 
     @Autowired
@@ -21,8 +21,8 @@ public class TaskService {
     public List<Task> getTasksByUser(String idUser) {
         return taskRepository.findTasksByUser(idUser);
     }
-    public void createUser(User usuario){
-        users.put(usuario.getId(),usuario);
+    public void createUser(User user){
+        users.put(user.getId(),user);
 
     }
 
