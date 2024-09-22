@@ -9,8 +9,8 @@ import java.util.List;
 
 @Service
 public class TaskService {
-    List<Task> tasks ;
-    HashMap<String,User> users;
+    List<Task> tasks;
+    HashMap<String,User> users = new HashMap<>();
     private TaskRepository taskRepository;
 
     @Autowired
@@ -21,9 +21,8 @@ public class TaskService {
     public List<Task> getTasksByUser(String idUser) {
         return taskRepository.findTasksByUser(idUser);
     }
-    public void createUser(User usuario){
-        users.put(usuario.getId(),usuario);
-
+    public void createUser(User user){
+        users.put(user.getId(),user);
     }
 
     public List<User> getUsers(){
@@ -32,5 +31,23 @@ public class TaskService {
             newUser.add(users.get(user));
         }
         return newUser;
+    }
+    public Task getTask(String id){
+        return taskRepository.findById(id).orElse(null);
+    }
+    public void saveTask(Task task){
+        taskRepository.save(task);
+    }
+    public void updateTask(String id, Task task){
+        Task taskRepo = getTask(id);
+        if (taskRepo != null){
+            taskRepository.save(task);
+        }
+    }
+    public void deleteTask(String id){
+        Task taskRepo = getTask(id);
+        if (taskRepo != null){
+            taskRepository.delete(taskRepo);
+        }
     }
 }
