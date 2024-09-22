@@ -4,42 +4,31 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
+
 
 @Document("tasks")
 public class Task {
 
     @Id
     private String id;
-    private String idUser;
     private String name;
     private String description;
-    private LocalDate finalDate;
+    private LocalDate dueDate;
     private LocalDate creationDate;
     private Boolean isCompleted = false;
 
-    public Task(String id,String idUser, String name, String description) {
+    public Task(String name, String description, LocalDate dueDate) {
         super();
-        this.id = id;
-        this.idUser = idUser;
         this.name = name;
         this.description = description;
         this.creationDate = LocalDate.now();
+        this.dueDate = dueDate;
     }
 
     public String getId() {
         return id;
     }
-    public void setId(String id) {
-        this.id = id;
-    }
-    public String getIdUser() {
-        return idUser;
-    }
-    public void setIdUser(String idUser) {
-        this.idUser = idUser;
-    }
+
     public String getName() {
         return name;
     }
@@ -51,12 +40,6 @@ public class Task {
     }
     public void setDescription(String description) {
         this.description = description;
-    }
-    public LocalDate getFinalDate() {
-        return finalDate;
-    }
-    public void setFinalDate(LocalDate finalDate) {
-        this.finalDate = finalDate;
     }
     public LocalDate getCreationDate() {
         return creationDate;
@@ -70,4 +53,11 @@ public class Task {
     public void setIsCompleted(Boolean isCompleted) {
         this.isCompleted = isCompleted;
     }
+    public void setDueDate(LocalDate dueDate){
+        this.dueDate= dueDate;
+    }
+    public LocalDate getDueDate(){
+        return this.dueDate;
+    }
+
 }
