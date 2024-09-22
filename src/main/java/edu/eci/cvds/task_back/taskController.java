@@ -10,21 +10,6 @@ import java.util.List;
 public class taskController {
     @Autowired
     private TaskService taskService;
-
-
-    @GetMapping ("getTasks")
-    public List<Task> getTasks(@RequestParam String idUser) {
-        return taskService.getTasksByUser(idUser);
-
-    }
-    @PostMapping ("createUser")
-    public void createUser(@RequestBody User user){
-        taskService.createUser(user);
-    }
-    @GetMapping ("getUsers")
-    public List<User> getUsers(){
-        return taskService.getUsers();
-    }
     @GetMapping("getTask")
     public Task getTask(@RequestParam String id){
         return taskService.getTask(id);
