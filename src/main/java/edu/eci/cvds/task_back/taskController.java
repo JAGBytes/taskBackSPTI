@@ -23,8 +23,8 @@ public class taskController {
     }
     @CrossOrigin(origins = "*")
     @PatchMapping("/{id}")
-    public void updateTask(@PathVariable String id, @RequestBody Task task){
-        taskService.updateTask(id, task);
+    public void markTaskAsCompleted(@RequestParam String id){
+        taskService.markTaskAsCompleted(id);
     }
     @CrossOrigin(origins = "*")
     @DeleteMapping("/{id}")

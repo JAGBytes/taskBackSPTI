@@ -22,10 +22,11 @@ public class TaskService {
     public void saveTask(Task task){
         taskRepository.save(task);
     }
-    public void updateTask(String id, Task task){
+    public void markTaskAsCompleted(String id){
         Task taskRepo = getTask(id);
+        taskRepo.setIsCompleted(true);
         if (taskRepo != null){
-            taskRepository.save(task);
+            taskRepository.save(taskRepo);
         }
     }
     public void deleteTask(String id){
