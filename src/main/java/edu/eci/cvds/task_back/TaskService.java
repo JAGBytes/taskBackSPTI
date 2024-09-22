@@ -36,7 +36,9 @@ public class TaskService {
         return taskRepository.findById(id).orElse(null);
     }
     public void saveTask(Task task){
-        taskRepository.save(task);
+        if (users.containsKey(task.getIdUser())){
+            taskRepository.save(task);
+        }
     }
     public void updateTask(String id, Task task){
         Task taskRepo = getTask(id);
