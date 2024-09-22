@@ -17,7 +17,6 @@ public class taskController {
         return taskService.getTasksByUser(idUser);
 
     }
-
     @PostMapping ("createUser")
     public void createUser(@RequestBody User user){
         taskService.createUser(user);
@@ -26,5 +25,22 @@ public class taskController {
     public List<User> getUsers(){
         return taskService.getUsers();
     }
+    @GetMapping("getTask")
+    public Task getTask(@RequestParam String id){
+        return taskService.getTask(id);
+    }
+    @PostMapping("saveTask")
+    public void saveTask(@RequestBody Task task){
+        taskService.saveTask(task);
+    }
+    @PutMapping("/{id}")
+    public void updateTask(@PathVariable String id, @RequestBody Task task){
+        taskService.updateTask(id, task);
+    }
+    @DeleteMapping("/{id}")
+    public void deleteTask(@PathVariable String id){
+        taskService.deleteTask(id);
+    }
+
 }
 

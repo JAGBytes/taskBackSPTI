@@ -1,5 +1,6 @@
 package edu.eci.cvds.task_back;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -10,6 +11,12 @@ public class User {
 
     private List<Task> tasks;
 
+    public User(String id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        tasks = new ArrayList<Task>();
+    }
     // Getter y setter para tasks
     public List<Task> getTasks(){
         return tasks;
@@ -46,5 +53,7 @@ public class User {
         this.email = email;
     }
 
-
+    public void addTask(Task task){
+        tasks.add(task);
+    }
 }
