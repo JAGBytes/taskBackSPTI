@@ -17,14 +17,17 @@ public class Task {
     private LocalDate creationDate;
     private Boolean isCompleted = false;
 
-    public Task(String name, String description, LocalDate dueDate) {
+    public Task(String id, String name, String description, LocalDate dueDate) {
         super();
+        this.id = id;
         this.name = name;
         this.description = description;
         this.creationDate = LocalDate.now();
         this.dueDate = dueDate;
     }
-
+    public void setId(){
+        this.id = id;
+    }
     public String getId() {
         return id;
     }

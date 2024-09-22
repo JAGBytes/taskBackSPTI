@@ -11,25 +11,30 @@ public class taskController {
 
     @Autowired
     private TaskService taskService;
-    @CrossOrigin(origins = "http://localhost:5500")
+    @CrossOrigin(origins = "*")
     @GetMapping("getTask")
     public Task getTask(@RequestParam String id){
         return taskService.getTask(id);
     }
-    @CrossOrigin(origins = "http://localhost:5500")
+    @CrossOrigin(origins = "*")
     @PostMapping("saveTask")
     public void saveTask(@RequestBody Task task){
         taskService.saveTask(task);
     }
-    @CrossOrigin(origins = "http://localhost:5500")
-    @PutMapping("/{id}")
+    @CrossOrigin(origins = "*")
+    @PatchMapping("/{id}")
     public void updateTask(@PathVariable String id, @RequestBody Task task){
         taskService.updateTask(id, task);
     }
-    @CrossOrigin(origins = "http://localhost:5500")
+    @CrossOrigin(origins = "*")
     @DeleteMapping("/{id}")
     public void deleteTask(@PathVariable String id){
         taskService.deleteTask(id);
+    }
+    @CrossOrigin(origins = "*")
+    @GetMapping("getTasks")
+    public List<Task> getTasks(){
+        return taskService.getTasks();
     }
 
 }
