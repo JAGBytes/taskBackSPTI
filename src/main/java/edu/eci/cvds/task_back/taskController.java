@@ -12,11 +12,6 @@ public class taskController {
     @Autowired
     private TaskService taskService;
     @CrossOrigin(origins = "*")
-    @GetMapping("getTask")
-    public Task getTask(@RequestParam String id){
-        return taskService.getTask(id);
-    }
-    @CrossOrigin(origins = "*")
     @PostMapping("saveTask")
     public void saveTask(@RequestBody Task task){
         taskService.saveTask(task);
