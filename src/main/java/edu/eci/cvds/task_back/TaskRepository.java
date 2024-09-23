@@ -8,8 +8,4 @@ import java.util.List;
 
 @Repository
 public interface TaskRepository extends MongoRepository<Task, String>, TaskTextRepository {
-
-    @Query("{idUser:'?0'}")
-    List<Task> findTasksByUser(String idUser);
-
 }
