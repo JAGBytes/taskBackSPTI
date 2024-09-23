@@ -22,13 +22,13 @@ public class taskController {
         taskService.saveTask(task);
     }
     @CrossOrigin(origins = "*")
-    @PatchMapping("/{id}")
+    @PatchMapping("/markTaskAsCompleted")
     public void markTaskAsCompleted(@RequestParam String id){
         taskService.markTaskAsCompleted(id);
     }
     @CrossOrigin(origins = "*")
-    @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable String id){
+    @DeleteMapping("/delete")
+    public void deleteTask(@RequestParam String id){
         taskService.deleteTask(id);
     }
     @CrossOrigin(origins = "*")
