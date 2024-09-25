@@ -1,11 +1,13 @@
 package edu.eci.cvds.task_back;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-
-@Repository
-public interface TaskRepository extends MongoRepository<Task, String>, TaskTextRepository {
+@Component
+public interface TaskRepository {
+    void saveTask(Task task);
+    List<Task> findAllTasks();
+    void deleteTask(Task task);
+    Task findTaskById(String id);
+    void updateTask(Task task);
 }
