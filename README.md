@@ -180,7 +180,7 @@ Durante la instalación, se activa la opción de instalar MongoDB como un servic
 ![image](https://github.com/user-attachments/assets/76592873-b4ea-48a2-901e-5da75cfd6648)
 ![image](https://github.com/user-attachments/assets/5960490e-6d75-4e08-98b9-f05ba2a62ab6)
 
-Siguiente a la instalación, configuramos el MongoDB, donde agregamos la dependencia en el `pom.xml`.
+Siguiente a la instalación, configuramos el MongoDB en nuestro proyecto, donde agregamos la dependencia en el `pom.xml`.
 
 ![image](https://github.com/user-attachments/assets/347fd7e8-5742-47ce-b020-e19aa5642c33)
 
