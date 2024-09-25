@@ -1,6 +1,7 @@
 package edu.eci.cvds.task_back;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,29 +11,29 @@ public class TaskService {
     private TaskRepository taskRepository;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(@Qualifier("mongo_repository") TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
     public Task getTask(String id){
-        return taskRepository.findById(id).orElse(null);
+        return taskRepository.findTaskById(id);
     }
     public List<Task> getTasks(){
-        return taskRepository.findAll();
+        return taskRepository.findAllTasks();
     }
     public void saveTask(Task task){
-        taskRepository.save(task);
+        taskRepository.saveTask(task);
     }
     public void markTaskAsCompleted(String id){
         Task taskRepo = getTask(id);
-        taskRepo.setIsCompleted(true);
         if (taskRepo != null){
-            taskRepository.save(taskRepo);
+            taskRepo.setIsCompleted(true);
+            taskRepository.saveTask(taskRepo);
         }
     }
     public void deleteTask(String id){
         Task taskRepo = getTask(id);
         if (taskRepo != null){
-            taskRepository.delete(taskRepo);
+            taskRepository.deleteTask(taskRepo);
         }
     }
 }
