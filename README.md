@@ -59,7 +59,7 @@ a) TaskService (Clase de Servicio): Esta clase maneja la lógica de negocio rela
 		public class TaskService {  
 		    private TaskRepository taskRepository;  
   
-	    @Autowired  
+	    	@Autowired  
 		  public TaskService(TaskRepository taskRepository) {  
 		        this.taskRepository = taskRepository;  
 		    }  
@@ -73,17 +73,144 @@ a) TaskService (Clase de Servicio): Esta clase maneja la lógica de negocio rela
 		        taskRepository.save(task);  
 		    }  
 		   public void markTaskAsCompleted(String id){  
-	       Task taskRepo = getTask(id);  
-	        taskRepo.setIsCompleted(true);  
-	        if (taskRepo != null){  
-	            taskRepository.save(taskRepo);  
-	        }  
+			Task taskRepo = getTask(id);  
+	        	taskRepo.setIsCompleted(true);  
+	        	if (taskRepo != null){  
+	            		taskRepository.save(taskRepo);  
+	        	}  
+	   	 }  
+		 public void deleteTask(String id){  
+	        	Task taskRepo = getTask(id);  
+	        	if (taskRepo != null){  
+	  			taskRepository.delete(taskRepo);  
+	        	}  
 	    }  
-		    public void deleteTask(String id){  
-	        Task taskRepo = getTask(id);  
-	        if (taskRepo != null){  
-	            taskRepository.delete(taskRepo);  
-	        }  
-	    }  
-	} 
+	}
+   
+
+b) TaskRepository (Interfaz del Repositorio): Es una interfaz que extiende `MongoRepository`, lo que significa que proporciona métodos estándar para interactuar con una base de datos MongoDB. Esta define métodos para realizar operaciones CRUD (Crear, Leer, Actualizar, Borrar) sobre la colección de tareas en MongoDB.
+Por otro lado, se tiene TaskTextRepository para archivos de texto plano para almacenar las tareas.
+
+
+```java 
+	package edu.eci.cvds.task_back;  
+	import org.springframework.data.mongodb.repository.MongoRepository;  
+	import org.springframework.data.mongodb.repository.Query;  
+	import org.springframework.stereotype.Repository;  
+	import java.util.List;  
+	  
+	@Repository  
+	public interface TaskRepository extends MongoRepository<Task, String>, TaskTextRepository {  
+		}	
 ```
+
+c) TaskController (Controlador REST):  Expone la API REST para que los clientes  puedan interactuar con el servicio de tareas.
+    
+Anotaciones:
+
+   -   `@RestController`: Define que esta clase es un controlador REST y puede manejar solicitudes HTTP.
+     
+   -  `@RequestMapping("/taskManager")`: Define que todas las rutas expuestas por este controlador estarán bajo el prefijo `/taskManager`.
+     
+   -   `@CrossOrigin(origins = "*")`: Permite peticiones desde cualquier origen (CORS), lo que permite el acceso desde cualquier dominio.
+     
+    
+ Rutas principales:
+    
+   -   `POST /saveTask`: Permite guardar una tarea mediante una solicitud HTTP POST. Los datos de la tarea se reciben en el cuerpo de la solicitud (`@RequestBody`).
+
+   -  `PATCH /markTaskAsCompleted`: Permite marcar una tarea como completada usando su ID mediante una solicitud HTTP PATCH con el parámetro `id`.
+
+   -  `DELETE /delete`: Elimina una tarea por su ID con una solicitud HTTP DELETE.
+
+   -  `GET /getTasks`: Retorna todas las tareas mediante una solicitud HTTP GET.
+    
+    
+   ```java
+		package edu.eci.cvds.task_back;  
+		import org.springframework.beans.factory.annotation.Autowired;  
+		import org.springframework.web.bind.annotation.*;  
+		import org.springframework.web.bind.annotation.CrossOrigin;  
+		import java.util.List;  
+  
+		@RestController  
+		@RequestMapping("/taskManager")  
+		public class taskController {  
+  
+	   	 @Autowired  
+		 private TaskService taskService;  
+	   	 @CrossOrigin(origins = "*")  
+	    	@PostMapping("saveTask")  
+	   	 public void saveTask(@RequestBody Task task){  
+	        	taskService.saveTask(task);  
+	    	}  
+	   	 @CrossOrigin(origins = "*")  
+	   	 @PatchMapping("/markTaskAsCompleted")  
+	   	 public void markTaskAsCompleted(@RequestParam String id){  
+	        	taskService.markTaskAsCompleted(id);  
+	    	}  
+	   	 @CrossOrigin(origins = "*")  
+	   	 @DeleteMapping("/delete")  
+	    	public void deleteTask(@RequestParam String id){  
+	  		taskService.deleteTask(id);  
+	   	 }  
+	    	@CrossOrigin(origins = "*")  
+	    	@GetMapping("getTasks")  
+	    	public List<Task> getTasks(){  
+	        	return taskService.getTasks();  
+	   	 }  
+	   	 }
+```
+			
+ *Flujo de ejecución*:
+
+1.  El cliente envía una solicitud HTTP al controlador `TaskController`.
+2.  El controlador llama a `TaskService`, que gestiona la lógica de negocio.
+3.  El servicio usa `TaskRepository` para interactuar con la base de datos MongoDB y realizar operaciones sobre las tareas.
+4.  El resultado se devuelve al usuario.
+
+### 4. Manejo de bases de datos no relacionales.
+
+Ahora bien, se descarga e instala MongoDB una base de datos no relacional.
+
+Primero, ejecutamos el instalador descargado, luego se selecciona la opción de instalación "Complete".
+
+Durante la instalación, se activa la opción de instalar MongoDB como un servicio.
+
+![image](https://github.com/user-attachments/assets/76592873-b4ea-48a2-901e-5da75cfd6648)
+![image](https://github.com/user-attachments/assets/5960490e-6d75-4e08-98b9-f05ba2a62ab6)
+
+Siguiente a la instalación, configuramos el MongoDB, donde agregamos la dependencia en el `pom.xml`.
+
+![image](https://github.com/user-attachments/assets/347fd7e8-5742-47ce-b020-e19aa5642c33)
+
+Luego, en el paquete de `resources` y en el archivo `aplication.properties` agregamos la configuración de la base de datos.
+
+![image](https://github.com/user-attachments/assets/7a0dfd8d-21b5-4531-baed-6b89a6315ff5)
+
+### 5. Garantizar calidad del código y detección de deuda técnica (pruebas unitarias)
+
+	
+
+### Referencias
+
+-https://start.spring.io
+
+-https://dev.azure.com
+
+-https://www.mongodb.com/try/download/community
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
