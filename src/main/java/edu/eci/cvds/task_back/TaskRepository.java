@@ -9,4 +9,5 @@ public interface TaskRepository {
     List<Task> findAllTasks();
     void deleteTask(Task task);
     Task findTaskById(String id);
+    void updateTask(Task task);
 }

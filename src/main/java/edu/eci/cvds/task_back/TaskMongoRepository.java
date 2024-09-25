@@ -27,4 +27,6 @@ public interface TaskMongoRepository extends TaskRepository,MongoRepository<Task
     public default Task findTaskById(String id){
         return findById(id).orElse(null);
     }
+    @Override
+    public default void updateTask(Task task){ save(task); }
 }

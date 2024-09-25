@@ -27,7 +27,7 @@ public class TaskService {
         Task taskRepo = getTask(id);
         if (taskRepo != null){
             taskRepo.setIsCompleted(true);
-            taskRepository.saveTask(taskRepo);
+            taskRepository.updateTask(taskRepo);
         }
     }
     public void deleteTask(String id){
