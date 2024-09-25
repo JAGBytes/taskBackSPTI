@@ -88,9 +88,24 @@ a) TaskService (Clase de Servicio): Esta clase maneja la lógica de negocio rela
 	}
    
 
-b) TaskRepository (Interfaz del Repositorio): Es una interfaz que extiende `MongoRepository`, lo que significa que proporciona métodos estándar para interactuar con una base de datos MongoDB. Esta define métodos para realizar operaciones CRUD (Crear, Leer, Actualizar, Borrar) sobre la colección de tareas en MongoDB.
-Por otro lado, se tiene TaskTextRepository para archivos de texto plano para almacenar las tareas.
+b) Interfaz del Repositorio: El código implementa dos tipos de repositorios para manejar tareas: uno basado en un archivo JSON y otro usando MongoDB. La interfaz `TaskRepository` define las operaciones CRUD (Crear, Leer, Actualizar y Borrar), que son implementadas tanto por la clase `TaskTextRepository`, que interactúa con un archivo JSON, como por el repositorio `TaskRepository` basado en `MongoRepository`, que interactúa con una base de datos MongoDB. `TaskTextRepository` maneja las tareas almacenadas en `src/main/resources/tasks.json` usando `JSONParser`, mientras que el repositorio Mongo usa `findById`, `save`, y `delete` para gestionar tareas directamente en MongoDB, ofreciendo mayor escalabilidad y facilidad de uso en aplicaciones más complejas.  
 
+
+```java 
+	package edu.eci.cvds.task_back;
+
+	import org.springframework.stereotype.Component;
+
+	import java.util.List;
+	@Component
+	public interface TaskRepository {
+ 		void saveTask(Task task);
+    	List<Task> findAllTasks();
+    	void deleteTask(Task task);
+	Task findTaskById(String id);
+    	void updateTask(Task task);
+}	
+```
 
 ```java 
 	package edu.eci.cvds.task_back;  
@@ -100,8 +115,145 @@ Por otro lado, se tiene TaskTextRepository para archivos de texto plano para alm
 	import java.util.List;  
 	  
 	@Repository  
-	public interface TaskRepository extends MongoRepository<Task, String>, TaskTextRepository {  
+	public interface TaskMongoRepository extends MongoRepository<Task, String>, TaskTextRepository {
+		   @Override
+		    public default void saveTask(Task task){
+		        save(task);
+		    }
+		    @Override
+		    public default List<Task> findAllTasks(){
+		        return findAll();
+		    }
+		    @Override
+		    public default void deleteTask(Task task){
+		        delete(task);
+		    }
+		    @Override
+		    public default Task findTaskById(String id){
+		        return findById(id).orElse(null);
+		    }
+		    @Override
+		    public default void updateTask(Task task){ save(task); }
 		}	
+```
+```java 
+	package edu.eci.cvds.task_back;
+
+	import org.json.simple.JSONObject;
+	import org.json.simple.parser.ParseException;
+	import org.springframework.stereotype.Repository;
+	import java.io.FileWriter;
+	import java.io.IOException;
+	import java.util.ArrayList;
+	import java.util.List;
+	import java.io.FileReader;
+	import java.util.Random;
+	
+	import org.json.simple.JSONArray;
+	import org.json.simple.parser.JSONParser;
+	@Repository
+	public class TaskTextRepository implements TaskRepository {
+	    private final static String filePath = "src/main/resources/tasks.json"; // Ruta del archivo JSON
+	
+	    @Override
+	    public void saveTask(Task task) {
+	        Task t = setRandomId(task);
+	        List<Task> tasks = findAllTasks();
+	        tasks.add(t);
+	        saveAllTasks(tasks);
+	    }
+	    @Override
+	    public List<Task> findAllTasks() {
+	        JSONParser parser = new JSONParser();
+	        try (FileReader fileReader = new FileReader(filePath)) {
+	            Object obj = parser.parse(fileReader);
+	            JSONArray tasks = (JSONArray) obj;
+	            List<Task> taskList = new ArrayList<>();
+	
+	            for (Object task : tasks) {
+	                JSONObject taskJson = (JSONObject) task;
+	                String id = taskJson.get("id").toString();
+	                String title = (String) taskJson.get("name");
+	                String description = (String) taskJson.get("description");
+	                // Convertir cadenas de fecha a LocalDate
+	                String dueDate = (String) taskJson.get("dueDate");
+	                String creationDate = (String) taskJson.get("creationDate");
+	                boolean completed = (boolean) taskJson.get("isCompleted");
+	                Task passedTask = new Task(id, title, description, dueDate);
+	                passedTask.setCreationDate(creationDate);
+	                passedTask.setIsCompleted(completed);
+	                taskList.add(passedTask);
+	            }
+	
+	            return taskList;
+	        } catch (IOException e) {
+	            return new ArrayList<>();
+	        } catch (ParseException e) {
+	            return new ArrayList<>();
+	        }
+	    }
+	    @Override
+	    public void deleteTask(Task task) {
+	        List<Task> tasks = findAllTasks();
+	        tasks.removeIf(t -> t.getId().equals(task.getId()));
+	        saveAllTasks(tasks);
+	    }
+	    @Override
+	    public void updateTask(Task task) {
+	        List<Task> tasks = findAllTasks();
+	        for (int i = 0; i < tasks.size(); i++) {
+	            Task t = tasks.get(i);
+	            if (t.getId().equals(task.getId())) {
+	                tasks.set(i, task);
+	                break;
+	            }
+	        }
+	        saveAllTasks(tasks);
+	    }
+	
+	    @Override
+	    public Task findTaskById(String id) {
+	        return findAllTasks().stream()
+	                .filter(task -> task.getId().equals(id))
+	                .findFirst()
+	                .orElse(null);
+	    }
+	
+	    private void saveAllTasks(List<Task> tasks) {
+	        JSONArray jsonArray = new JSONArray();
+	        for(Task task : tasks) {
+	            JSONObject taskJson = new JSONObject();
+	            taskJson.put("id", task.getId());
+	            taskJson.put("name",task.getName());
+	            taskJson.put("description", task.getDescription());
+	            taskJson.put("dueDate", task.getDueDate());
+	            taskJson.put("creationDate", task.getCreationDate());
+	            taskJson.put("isCompleted", task.getIsCompleted());
+	            jsonArray.add(taskJson);
+	        }
+	        System.out.println(jsonArray);
+	        try(FileWriter file = new FileWriter(filePath)){
+	            file.write(jsonArray.toJSONString());
+	            file.flush();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	
+	    private Task setRandomId(Task task) {
+	        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	        Random random = new Random();
+	        String taskId = "";
+	        for (int i = 0; i < 6; i++) {
+	            int index = random.nextInt(CHARACTERS.length());
+	            char character = CHARACTERS.charAt(index);
+	            taskId += character;
+	        }
+	        task.setId(taskId);
+	        return task;
+	    }
+	}
+		
 ```
 
 c) TaskController (Controlador REST):  Expone la API REST para que los clientes  puedan interactuar con el servicio de tareas.
