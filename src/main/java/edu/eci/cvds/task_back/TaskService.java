@@ -20,9 +20,7 @@ public class TaskService {
         return taskRepository.findAll();
     }
     public void saveTask(Task task){
-        if (users.containsKey(task.getIdUser())){
-            taskRepository.save(task);
-        }
+        taskRepository.save(task);
     }
     public void markTaskAsCompleted(String id){
         Task taskRepo = getTask(id);
