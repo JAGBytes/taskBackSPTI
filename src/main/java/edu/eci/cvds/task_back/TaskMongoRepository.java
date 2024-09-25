@@ -3,27 +3,28 @@ package edu.eci.cvds.task_back;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-@Component("mongo_repository")
-public class TaskMongoRepository extends TaskRepository{
+@Repository
+public interface TaskMongoRepository extends TaskRepository,MongoRepository<Task,String>{
 
-    @Autowired
-    public TaskMongoRepository(IMongoRepository mongo){
-        super(mongo);
+    @Override
+    public default void saveTask(Task task){
+        save(task);
     }
-
-    public void saveTask(Task task){
-        ((IMongoRepository)repository).save(task);
+    @Override
+    public default List<Task> findAllTasks(){
+        return findAll();
     }
-    public List<Task> findAllTasks(){
-        return ((IMongoRepository)repository).findAll();
+    @Override
+    public default void deleteTask(Task task){
+        delete(task);
     }
-    public void deleteTask(Task task){
-        ((IMongoRepository)repository).deleteTask(task);
-    }
-    public Task findTaskById(String id){
-        return ((IMongoRepository)repository).findById(id).orElse(null);
+    @Override
+    public default Task findTaskById(String id){
+        return findById(id).orElse(null);
     }
 }

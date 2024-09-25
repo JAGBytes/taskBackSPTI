@@ -11,7 +11,7 @@ public class TaskService {
     private TaskRepository taskRepository;
 
     @Autowired
-    public TaskService(@Qualifier("mongo_repository") TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
     public Task getTask(String id){
