@@ -21,7 +21,8 @@ El proyecto consiste en una aplicación de gestión de tareas personales donde l
 Se realizo toda la planificación que se requiere para poder dar inicio al proyecto planteado mediante Azure DevOps, por donde se asignó a cada integrante un función específica.
 
 
-![image](https://github.com/user-attachments/assets/38a054d0-ef55-4113-a247-b8cec3fcabe7)
+![image](https://github.com/user-attachments/assets/8443650e-d8ab-4d10-9910-71383ac668fc)
+
 
 
 ### 2.  Entender arquitectura cliente servidor.
