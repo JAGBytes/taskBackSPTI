@@ -5,7 +5,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 
-
+/**
+ * Representa una tarea en el sistema de gestión de tareas.
+ * Esta clase almacena información sobre la tarea, incluyendo su nombre,
+ * descripción, fechas de creación y vencimiento,  estado de finalización.
+ */
 @Document("tasks")
 public class Task {
 
@@ -17,7 +21,13 @@ public class Task {
     private String creationDate;
     private Boolean isCompleted = false;
 
-    // Constructor actualizado para incluir 'description'
+    /**
+     * Constructor para crear una nueva tarea.
+     * @param id Identificador único de la tarea.
+     * @param name Nombre de la tarea.
+     * @param description Descripción de la tarea.
+     * @param dueDate Fecha de vencimiento de la tarea.
+     */
     public Task(String id, String name, String description, String dueDate) {
         this.id = id;
         this.name = name;

@@ -3,6 +3,12 @@ package edu.eci.cvds.task_back;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+/**
+ * Interfaz que define los métodos básicos para gestionar tareas.
+ * Las clases que implementan esta interfaz deben proporcionar
+ * la lógica para almacenar, actualizar, eliminar y recuperar tareas.
+ */
 @Component
 public interface TaskRepository {
     void saveTask(Task task);

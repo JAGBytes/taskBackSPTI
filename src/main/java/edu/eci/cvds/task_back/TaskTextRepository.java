@@ -12,10 +12,20 @@ import java.util.Random;
 
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
+
+/**
+ * Implementación del repositorio de tareas utilizando un archivo JSON para el almacenamiento.
+ * Se encarga de realizar operaciones CRUD en el archivo de tareas.
+ */
 @Repository
 public class TaskTextRepository implements TaskRepository {
     private final static String filePath = "src/main/resources/tasks.json"; // Ruta del archivo JSON
 
+    /**
+     * Guarda una nueva tarea en el archivo JSON. Si la tarea no tiene un ID,
+     * se le asigna un ID aleatorio.
+     * @param task La tarea a guardar.
+     */
     @Override
     public void saveTask(Task task) {
         Task t = setRandomId(task);
@@ -23,6 +33,11 @@ public class TaskTextRepository implements TaskRepository {
         tasks.add(t);
         saveAllTasks(tasks);
     }
+
+    /**
+     * Recupera todas las tareas almacenadas en el archivo JSON.
+     * @return Lista de todas las tareas.
+     */
     @Override
     public List<Task> findAllTasks() {
         JSONParser parser = new JSONParser();
@@ -53,12 +68,22 @@ public class TaskTextRepository implements TaskRepository {
             return new ArrayList<>();
         }
     }
+
+    /**
+     * Elimina una tarea del archivo JSON.
+     * @param task La tarea a eliminar.
+     */
     @Override
     public void deleteTask(Task task) {
         List<Task> tasks = findAllTasks();
         tasks.removeIf(t -> t.getId().equals(task.getId()));
         saveAllTasks(tasks);
     }
+
+    /**
+     * Actualiza una tarea existente en el archivo JSON.
+     * @param task La tarea a actualizar.
+     */
     @Override
     public void updateTask(Task task) {
         List<Task> tasks = findAllTasks();
@@ -72,6 +97,11 @@ public class TaskTextRepository implements TaskRepository {
         saveAllTasks(tasks);
     }
 
+    /**
+     * Busca una tarea por su ID en el archivo JSON.
+     * @param id El identificador de la tarea.
+     * @return La tarea encontrada o {@code null} si no existe.
+     */
     @Override
     public Task findTaskById(String id) {
         return findAllTasks().stream()
@@ -80,6 +110,10 @@ public class TaskTextRepository implements TaskRepository {
                 .orElse(null);
     }
 
+    /**
+     * Guarda todas las tareas en el archivo JSON.
+     * @param tasks Lista de tareas a guardar.
+     */
     private void saveAllTasks(List<Task> tasks) {
         JSONArray jsonArray = new JSONArray();
         for(Task task : tasks) {
@@ -101,6 +135,11 @@ public class TaskTextRepository implements TaskRepository {
         }
     }
 
+    /**
+     * Asigna un ID aleatorio a una tarea si no lo tiene.
+     * @param task La tarea a la que se le asignará el ID.
+     * @return La tarea con el ID asignado.
+     */
     private Task setRandomId(Task task) {
         String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         Random random = new Random();
