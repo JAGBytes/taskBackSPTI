@@ -1,10 +1,7 @@
 package edu.eci.cvds.task_back;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import java.io.FileWriter;
 import java.io.IOException;
