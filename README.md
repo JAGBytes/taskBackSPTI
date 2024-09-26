@@ -344,7 +344,7 @@ Luego, en el paquete de `resources` y en el archivo `application.properties` agr
 
 *TaskControllerTest*:
 
-La clase TaskControllerTest es una prueba unitaria diseñada para validar el comportamiento del controlador TaskController, que gestiona las operaciones relacionadas con el gestor de tareas. La prueba utiliza Mockito para simular las interacciones con el servicio TaskService, permitiendo verificar que el controlador se comporta como se espera sin necesidad de acceder a la implementación real del servicio.
+La clase TaskControllerTest es una prueba unitaria diseñada para validar el comportamiento del controlador TaskController, que gestiona las operaciones relacionadas con el gestor de tareas.
 
 Componentes Clave:
 
@@ -411,7 +411,7 @@ Pruebas Unitarias:
 ```
 *TaskServiceTest*:
 
-La clase TaskServiceTest se utiliza para validar el comportamiento del servicio TaskService, que gestiona las operaciones sobre las tareas. Se emplea Mockito para simular el repositorio TaskRepository, permitiendo probar el servicio de forma aislada.
+La clase TaskServiceTest se utiliza para validar el comportamiento del servicio TaskService, que gestiona las operaciones sobre las tareas.
 
 Componentes Clave:
 
@@ -422,6 +422,19 @@ Componentes Clave:
 `@InjectMocks`: Crea una instancia de TaskService y le inyecta el mock del repositorio.
 
 Pruebas Unitarias:
+`testGetTask`: Simula la recuperación de una tarea por ID. Se verifica que el resultado no sea nulo y que los atributos de la tarea sean correctos al usar assertEquals.
+
+```java
+@Test
+    void testGetTask() {
+        Task task = new Task("1", "Test Task", "Description", LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        when(taskRepository.findTaskById("1")).thenReturn(task);
+        Task result = taskService.getTask("1");
+        assertNotNull(result);
+        assertEquals("1", result.getId());
+        assertEquals("Test Task", result.getName());
+    }
+```
 
 `testGetTasks`: Simula la obtención de todas las tareas. Se comprueba que la lista devuelta no sea nula, tenga el tamaño esperado y que contenga las tareas correctas.
 ```java
@@ -477,7 +490,208 @@ Pruebas Unitarias:
     }
 ```
 
-Las clases `TaskControllerTest` y `TaskServiceTest` no solo validan el comportamiento de las clases, sino que también permite evaluar la calidad del código utilizando JaCoCo. JaCoCo es una herramienta de cobertura de código que ayuda a identificar qué partes del código han sido ejecutadas durante las pruebas, proporcionando métricas clave sobre la calidad del código.
+*TaskTestRepositoryTest:*
+
+La clase `TaskTextRepositoryTest` es responsable de probar el comportamiento del repositorio de tareas que interactúa con un archivo de texto en formato JSON. 
+
+Componentes Clave:
+
+`@Spy`: Se utiliza @Spy para crear un espía sobre TaskTextRepository, lo que permite verificar las llamadas a métodos reales.
+`@InjectMocks`: inyectar dependencias necesarias.
+
+Pruebas Unitarias:
+
+`testSaveTask`: Verifica que al guardar una tarea, se llame al método findAllTasks. Se asegura de que las interacciones con el repositorio se realicen correctamente.
+
+```java
+@Test
+    public void testSaveTask() {
+        Task task = new Task("1", "Test Task", "Description",
+LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        doReturn(new ArrayList<>()).when(taskTextRepository).findAllTasks();
+        taskTextRepository.saveTask(task);
+        verify(taskTextRepository, times(1)).findAllTasks();
+    }
+```
+
+`testFindAllTasks`: Comprueba que se devuelven correctamente varias tareas, verificando tanto la cantidad como los valores específicos de cada tarea.
+
+```java
+@Test
+    public void testFindAllTasks(){
+        Task task1 = new Task("1", "Test Task 1", "Description 1",
+  LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        Task task2 = new Task("2", "Test Task 2", "Description 2",        LocalDate.now().plusDays(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        List<Task> tasks = Arrays.asList(task1, task2);
+        doReturn(tasks).when(taskTextRepository).findAllTasks();
+        List<Task> result = taskTextRepository.findAllTasks();
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("Test Task 1", result.get(0).getName());
+        assertEquals("Test Task 2", result.get(1).getName());
+    }
+```
+
+`testDeleteTask`: Valida que al eliminar una tarea, se llame a findAllTasks para obtener la lista actualizada de tareas.
+
+```java
+@Test
+    public void testDeleteTask() {
+        Task task = new Task("1", "Test Task", "Description",
+LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(task); 
+        doReturn(tasks).when(taskTextRepository).findAllTasks();
+        taskTextRepository.deleteTask(task);
+        verify(taskTextRepository, times(1)).findAllTasks();
+    }
+```
+
+`testUpdateTask`: Asegura que al actualizar una tarea, se llamen a los métodos correctos para manejar la operación.
+
+```java
+@Test
+    public void testUpdateTask() {
+        Task task = new Task("1", "Test Task", "Description",
+LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(task);
+        doReturn(tasks).when(taskTextRepository).findAllTasks();
+        task.setDescription("Updated Description");
+        taskTextRepository.updateTask(task);
+        verify(taskTextRepository, times(1)).findAllTasks();
+    }
+```
+
+`testFindTaskById`: Verifica que al buscar una tarea por ID, se obtenga la tarea correcta.
+
+```java
+@Test
+    public void testFindTaskById() {
+        Task task = new Task("1", "Test Task", "Description",
+LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        List<Task> tasks = new ArrayList<>();
+        tasks.add(task); 
+        doReturn(tasks).when(taskTextRepository).findAllTasks();
+        Task result = taskTextRepository.findTaskById("1");
+        assertNotNull(result); 
+        assertEquals("1", result.getId()); .
+        assertEquals("Test Task", result.getName()); 
+    }
+```
+`testFindAllTasks_ValidJsonFile`: Simula la lectura de un archivo JSON válido, asegurando que las tareas se lean y se asignen correctamente a objetos Task.
+
+```java
+@Test
+    public void testFindAllTasks_ValidJsonFile() throws IOException, ParseException {
+        
+        String jsonContent = "[{\"id\":\"1\",\"name\":\"Test Task 1\",\"description\":\"Description 1\",\"dueDate\":\"2024-09-26\",\"creationDate\":\"2024-09-25\",\"isCompleted\":false}," +
+                "{\"id\":\"2\",\"name\":\"Test Task 2\",\"description\":\"Description 2\",\"dueDate\":\"2024-09-27\",\"creationDate\":\"2024-09-25\",\"isCompleted\":true}]";
+        try (FileWriter fileWriter = new FileWriter("src/main/resources/tasks.json")) {
+            fileWriter.write(jsonContent);
+        }
+        List<Task> tasks = taskTextRepository.findAllTasks();
+        assertNotNull(tasks);
+        assertEquals(2, tasks.size());
+        assertEquals("Test Task 1", tasks.get(0).getName());
+        assertEquals("Description 1", tasks.get(0).getDescription());
+        assertEquals("2024-09-26", tasks.get(0).getDueDate());
+        assertFalse(tasks.get(0).getIsCompleted()); 
+        assertEquals("Test Task 2", tasks.get(1).getName());
+        assertEquals("Description 2", tasks.get(1).getDescription());
+        assertEquals("2024-09-27", tasks.get(1).getDueDate());
+        assertTrue(tasks.get(1).getIsCompleted()); 
+    }
+
+```
+
+`testFindAllTasksEmptyJsonFile`: Comprueba el manejo de un archivo JSON vacío, asegurando que se devuelva una lista vacía sin errores.
+
+```java
+@Test
+    public void testFindAllTasksEmptyJsonFile() throws IOException {
+        try (FileWriter fileWriter = new FileWriter("src/main/resources/tasks.json")) {
+            fileWriter.write("[]"); 
+        }
+
+        List<Task> tasks = taskTextRepository.findAllTasks();
+        assertNotNull(tasks);
+        assertTrue(tasks.isEmpty());
+    }
+```
+
+`testFindAllTasksInvalidJsonFile`: Valida el comportamiento del método al intentar leer un archivo JSON con formato inválido, asegurando que se maneje la excepción y se devuelva una lista vacía.
+
+```java
+@Test
+    public void testFindAllTasksInvalidJsonFile() {
+        try (FileWriter fileWriter = new FileWriter("src/main/resources/tasks.json")) {
+            fileWriter.write("{invalidJson}"); 
+        } catch (IOException e) {
+            fail("No se pudo escribir en el archivo");
+        }
+        List<Task> tasks = taskTextRepository.findAllTasks();
+        assertNotNull(tasks);
+        
+        assertTrue(tasks.isEmpty());
+    }
+```
+*TaskCongigTest*:
+
+La clase TaskConfigTest tiene como objetivo probar la configuración del repositorio de tareas, verificando que el tipo de repositorio seleccionado (Mongo o Texto) funcione correctamente y maneje adecuadamente casos no soportados.
+
+Componentes clave:
+
+`@Mock y @InjectMocks`: Se utilizan para crear simulaciones de TaskMongoRepository y TaskTextRepository, así como para inyectarlas en TaskConfig, permitiendo probar su lógica sin depender de implementaciones concretas.
+
+`MockitoAnnotations.openMocks(this)`: Inicializa las anotaciones de Mockito en el método setUp, asegurando que los mocks estén listos para usar antes de cada prueba.
+
+`testTaskRepositoryMongo`: Configura el tipo de repositorio como "mongo". Verifica que el método taskRepository() devuelva una instancia de TaskMongoRepository.
+
+```java
+ @Test
+    public void testTaskRepositoryMongo() {
+        repositoryType = "mongo";
+        taskConfig = new TaskConfig(taskMongoRepository, taskTextRepository);
+        ReflectionTestUtils.setField(taskConfig, "repositoryType", repositoryType);
+        TaskRepository repository = taskConfig.taskRepository();
+        assertNotNull(repository);
+        assertTrue(repository instanceof TaskMongoRepository);
+    }
+```
+
+`testTaskRepositoryText`:Configura el tipo de repositorio como "text".
+Verifica que el método taskRepository() devuelva una instancia de TaskTextRepository.
+
+```java
+@Test
+    public void testTaskRepositoryText() {
+        repositoryType = "text";
+        taskConfig = new TaskConfig(taskMongoRepository, taskTextRepository);
+        ReflectionTestUtils.setField(taskConfig, "repositoryType", repositoryType);
+        TaskRepository repository = taskConfig.taskRepository();
+        assertNotNull(repository);
+        assertTrue(repository instanceof TaskTextRepository);
+    }
+```
+
+`testTaskRepositoryUnsupportedType`: Configura un tipo de repositorio no soportado. Asegura que al llamar a taskRepository() se lance una IllegalArgumentException con el mensaje "Tipo de repositorio no soportado".
+
+```java
+@Test
+    public void testTaskRepositoryUnsupportedType() {
+        repositoryType = "unsupported";
+        taskConfig = new TaskConfig(taskMongoRepository, taskTextRepository);
+        ReflectionTestUtils.setField(taskConfig, "repositoryType", repositoryType);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            taskConfig.taskRepository();
+        });
+        assertEquals("Tipo de repositorio no soportado", exception.getMessage());
+    }
+```
+
+
+Las clases `TaskControllerTest`, `TaskServiceTest`, `TaskTestRepositoryTest` y `TaskCongigTest`  no solo validan el comportamiento de las clases, sino que también permite evaluar la calidad del código utilizando JaCoCo. JaCoCo es una herramienta de cobertura de código que ayuda a identificar qué partes del código han sido ejecutadas durante las pruebas, proporcionando métricas clave sobre la calidad del código.
 
 ![image](https://github.com/user-attachments/assets/bf00df6a-0bea-450c-9076-357eca31f99e)
 ![image](https://github.com/user-attachments/assets/a4c42419-f710-41d4-92fd-5553fc143e80)
