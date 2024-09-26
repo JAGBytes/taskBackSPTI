@@ -100,10 +100,10 @@ b) Interfaz del Repositorio: El código implementa dos tipos de repositorios par
 	@Component
 	public interface TaskRepository {
  		void saveTask(Task task);
-    	List<Task> findAllTasks();
-    	void deleteTask(Task task);
-	Task findTaskById(String id);
-    	void updateTask(Task task);
+	    	List<Task> findAllTasks();
+	    	void deleteTask(Task task);
+		Task findTaskById(String id);
+	    	void updateTask(Task task);
 }	
 ```
 
@@ -336,13 +336,152 @@ Siguiente a la instalación, configuramos el MongoDB en nuestro proyecto, donde 
 
 ![image](https://github.com/user-attachments/assets/347fd7e8-5742-47ce-b020-e19aa5642c33)
 
-Luego, en el paquete de `resources` y en el archivo `aplication.properties` agregamos la configuración de la base de datos.
+Luego, en el paquete de `resources` y en el archivo `application.properties` agregamos la configuración de la base de datos.
 
 ![image](https://github.com/user-attachments/assets/7a0dfd8d-21b5-4531-baed-6b89a6315ff5)
 
 ### 5. Garantizar calidad del código y detección de deuda técnica (pruebas unitarias)
 
+*TaskControllerTest*:
+
+La clase TaskControllerTest es una prueba unitaria diseñada para validar el comportamiento del controlador TaskController, que gestiona las operaciones relacionadas con el gestor de tareas. La prueba utiliza Mockito para simular las interacciones con el servicio TaskService, permitiendo verificar que el controlador se comporta como se espera sin necesidad de acceder a la implementación real del servicio.
+
+Componentes Clave:
+
+`MockMvc`: Permite realizar solicitudes HTTP simuladas al controlador y verificar las respuestas.
+
+`Mockito`: Biblioteca para crear objetos simulados (mocks) y verificar interacciones con ellos.
+
+`@Mock`: Simula TaskService.
+
+`@InjectMocks`: Crea una instancia de TaskController con el mock inyectado.
+
+Pruebas Unitarias:
+
+`testSaveTask`: Simula una solicitud POST para guardar una tarea y verifica que el servicio saveTask sea llamado una vez.
+
+```java
+	@Test
+	    public void testSaveTask() throws Exception {
+	        mockMvc.perform(post("/taskManager/saveTask")
+	                        .contentType(MediaType.APPLICATION_JSON)
+	                        .content("{\"id\":\"1\", \"name\":\"Test Task 1\", \"description\":\"Description 1\", \"dueDate\":\"2024-12-31\"}"))
+	                .andExpect(status().isOk());
 	
+	        verify(taskService, times(1)).saveTask(any(Task.class));
+	    }
+```
+`testMarkTaskAsCompleted`:Simula una solicitud PATCH para marcar una tarea como completada, verificando que markTaskAsCompleted se llame con el ID correcto.
+```java
+@Test
+    public void testMarkTaskAsCompleted() throws Exception {
+        mockMvc.perform(patch("/taskManager/markTaskAsCompleted")
+                        .param("id", "1"))
+                .andExpect(status().isOk());
+
+        verify(taskService, times(1)).markTaskAsCompleted("1");
+    }
+```
+
+`testDeleteTask`:Simula una solicitud DELETE para eliminar una tarea, verificando que deleteTask se invoque con el ID de la tarea.
+```java
+@Test
+    public void testDeleteTask() throws Exception {
+        mockMvc.perform(delete("/taskManager/delete")
+                        .param("id", "1"))
+                .andExpect(status().isOk());
+
+        verify(taskService, times(1)).deleteTask("1");
+    }
+```
+
+`testGetTasks`:Simula una solicitud GET para obtener tareas y verifica que se devuelvan las tareas esperadas y que getTasks se llame una vez.
+```java
+@Test
+    public void testGetTasks() throws Exception {
+        List<Task> tasks = Arrays.asList(task1, task2);
+        when(taskService.getTasks()).thenReturn(tasks);
+
+        mockMvc.perform(get("/taskManager/getTasks"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Test Task 1"))
+                .andExpect(jsonPath("$[1].name").value("Test Task 2"));
+
+        verify(taskService, times(1)).getTasks();
+```
+*TaskServiceTest*:
+
+La clase TaskServiceTest se utiliza para validar el comportamiento del servicio TaskService, que gestiona las operaciones sobre las tareas. Se emplea Mockito para simular el repositorio TaskRepository, permitiendo probar el servicio de forma aislada.
+
+Componentes Clave:
+
+`Mockito`: Facilita la creación de objetos simulados y la verificación de interacciones.
+
+`@Mock`: Simula TaskRepository para evitar interacciones con la base de datos real.
+
+`@InjectMocks`: Crea una instancia de TaskService y le inyecta el mock del repositorio.
+
+Pruebas Unitarias:
+
+`testGetTasks`: Simula la obtención de todas las tareas. Se comprueba que la lista devuelta no sea nula, tenga el tamaño esperado y que contenga las tareas correctas.
+```java
+ @Test
+    public void testGetTasks() throws Exception {
+        List<Task> tasks = Arrays.asList(task1, task2);
+        when(taskService.getTasks()).thenReturn(tasks);
+
+        mockMvc.perform(get("/taskManager/getTasks"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Test Task 1"))
+                .andExpect(jsonPath("$[1].name").value("Test Task 2"));
+
+        verify(taskService, times(1)).getTasks();
+    }
+```
+
+`testSaveTask`: Simula el guardado de una tarea. Se verifica que el método save del repositorio se llame una vez con la tarea correcta.
+```java
+@Test
+    public void testSaveTask() throws Exception {
+        mockMvc.perform(post("/taskManager/saveTask")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\":\"1\", \"name\":\"Test Task 1\", \"description\":\"Description 1\", \"dueDate\":\"2024-12-31\"}"))
+                .andExpect(status().isOk());
+
+        verify(taskService, times(1)).saveTask(any(Task.class));
+    }
+```
+
+`testMarkTaskAsCompleted`:Simula la acción de marcar una tarea como completada. Se verifica que la tarea se haya actualizado correctamente y que el método save se invoque en el repositorio.
+
+```java
+@Test
+    public void testMarkTaskAsCompleted() throws Exception {
+        mockMvc.perform(patch("/taskManager/markTaskAsCompleted")
+                        .param("id", "1"))
+                .andExpect(status().isOk());
+
+        verify(taskService, times(1)).markTaskAsCompleted("1");
+    }
+```
+
+`testDeleteTask`:Simula la eliminación de una tarea. Se verifica que el método delete del repositorio se llame con la tarea correcta.
+```java
+ @Test
+    public void testDeleteTask() throws Exception {
+        mockMvc.perform(delete("/taskManager/delete")
+                        .param("id", "1"))
+                .andExpect(status().isOk());
+
+        verify(taskService, times(1)).deleteTask("1");
+    }
+```
+
+Las clases `TaskControllerTest` y `TaskServiceTest` no solo validan el comportamiento de las clases, sino que también permite evaluar la calidad del código utilizando JaCoCo. JaCoCo es una herramienta de cobertura de código que ayuda a identificar qué partes del código han sido ejecutadas durante las pruebas, proporcionando métricas clave sobre la calidad del código.
+
+![image](https://github.com/user-attachments/assets/bf00df6a-0bea-450c-9076-357eca31f99e)
+![image](https://github.com/user-attachments/assets/a4c42419-f710-41d4-92fd-5553fc143e80)
+
 
 ### Referencias
 
