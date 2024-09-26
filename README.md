@@ -9,7 +9,7 @@
 
 *-Laura Sofia Gil Chaves.*
 
-## Bitacora taskBack
+## Bitácora taskBack
 
 ###  1.  Planeación de un proyecto de software.
 
