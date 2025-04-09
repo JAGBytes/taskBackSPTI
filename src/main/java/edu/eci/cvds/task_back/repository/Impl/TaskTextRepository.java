@@ -1,8 +1,12 @@
-package edu.eci.cvds.task_back;
+package edu.eci.cvds.task_back.repository.Impl;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Repository;
+
+import edu.eci.cvds.task_back.model.Task;
+import edu.eci.cvds.task_back.repository.TaskRepository;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;

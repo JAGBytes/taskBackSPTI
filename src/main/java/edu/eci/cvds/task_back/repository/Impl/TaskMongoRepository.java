@@ -1,7 +1,10 @@
-package edu.eci.cvds.task_back;
+package edu.eci.cvds.task_back.repository.Impl;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
+
+import edu.eci.cvds.task_back.model.Task;
+import edu.eci.cvds.task_back.repository.TaskRepository;
 
 import java.util.List;
 

@@ -1,9 +1,13 @@
-package edu.eci.cvds.task_back;
+package edu.eci.cvds.task_back.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import edu.eci.cvds.task_back.repository.TaskRepository;
+import edu.eci.cvds.task_back.repository.Impl.TaskMongoRepository;
+import edu.eci.cvds.task_back.repository.Impl.TaskTextRepository;
 
 /**
  * Clase de configuración para los repositorios de tareas.

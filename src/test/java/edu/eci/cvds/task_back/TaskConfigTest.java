@@ -7,6 +7,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import edu.eci.cvds.task_back.config.TaskConfig;
+import edu.eci.cvds.task_back.repository.TaskRepository;
+import edu.eci.cvds.task_back.repository.Impl.TaskMongoRepository;
+import edu.eci.cvds.task_back.repository.Impl.TaskTextRepository;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

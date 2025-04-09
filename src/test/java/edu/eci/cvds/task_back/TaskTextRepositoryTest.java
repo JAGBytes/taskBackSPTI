@@ -7,6 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
+import edu.eci.cvds.task_back.model.Task;
+import edu.eci.cvds.task_back.repository.Impl.TaskTextRepository;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;

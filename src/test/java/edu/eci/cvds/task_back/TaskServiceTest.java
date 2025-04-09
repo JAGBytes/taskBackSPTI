@@ -7,6 +7,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import edu.eci.cvds.task_back.model.Task;
+import edu.eci.cvds.task_back.repository.TaskRepository;
+import edu.eci.cvds.task_back.service.TaskService;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
