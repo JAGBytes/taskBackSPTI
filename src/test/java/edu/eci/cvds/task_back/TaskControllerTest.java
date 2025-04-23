@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import edu.eci.cvds.task_back.controller.taskController;
+import edu.eci.cvds.task_back.controller.TaskController;
 import edu.eci.cvds.task_back.model.Task;
 import edu.eci.cvds.task_back.service.TaskService;
 
@@ -32,7 +32,7 @@ public class TaskControllerTest {
     private TaskService taskService;
 
     @InjectMocks
-    private taskController taskController;
+    private TaskController taskController;
 
     private Task task1;
     private Task task2;

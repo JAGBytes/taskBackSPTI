@@ -1,21 +1,10 @@
 package edu.eci.cvds.task_back.repository;
 
-import org.springframework.stereotype.Component;
 
 import edu.eci.cvds.task_back.model.Task;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-/**
- * Interfaz que define los métodos básicos para gestionar tareas.
- * Las clases que implementan esta interfaz deben proporcionar
- * la lógica para almacenar, actualizar, eliminar y recuperar tareas.
- */
-@Component
-public interface TaskRepository {
-    void saveTask(Task task);
-    List<Task> findAllTasks();
-    void deleteTask(Task task);
-    Task findTaskById(String id);
-    void updateTask(Task task);
+@Repository
+public interface TaskRepository extends MongoRepository<Task, String>{
 }
