@@ -3,6 +3,7 @@ package edu.eci.cvds.task_back.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import edu.eci.cvds.task_back.dto.TaskDTO;
 import edu.eci.cvds.task_back.model.Task;
 import edu.eci.cvds.task_back.service.TaskService;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/taskManager")
-public class taskController {
+public class TaskController {
 
     @Autowired
     private TaskService taskService;
@@ -28,7 +29,9 @@ public class taskController {
      */
 
     @PostMapping("saveTask")
-    public void saveTask(@RequestBody Task task){
+    public void saveTask(@RequestBody TaskDTO taskdto){
+        Task task = new Task(taskdto.getId(), taskdto.getName(), taskdto.getDescription(), taskdto.getDueDate());
+
         taskService.saveTask(task);
     }
 

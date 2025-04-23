@@ -1,16 +1,10 @@
 package edu.eci.cvds.task_back.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.time.LocalDate;
 
-/**
- * Representa una tarea en el sistema de gestión de tareas.
- * Esta clase almacena información sobre la tarea, incluyendo su nombre,
- * descripción, fechas de creación y vencimiento,  estado de finalización.
- */
-@Document("tasks")
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.Id;
+@Document(collection = "tasks")
 public class Task {
 
     @Id
